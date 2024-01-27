@@ -1,6 +1,10 @@
 from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import *
+import json
 app = QApplication([])
-
+notes = {}
 window = QWidget()
 window.resize(700, 500)
 text_edit = QTextEdit()
@@ -38,6 +42,36 @@ v2.addWidget(search_notes_for_teg)
 main_line.addLayout(v1)
 main_line.addLayout(v2)
 window.setLayout(main_line)
+def read_data():
+    global notes
+    with open("database.json", "r", encoding="utf-8") as file:
+       notes = json.load(file)
+
+def write_data():
+    global notes
+    with open("database.json", "w", encoding="utf-8") as file:
+        json.dump(notes, file, ensure_ascii=False, indent=4)
+read_data()
+list_widget.addItems(notes)
+def vmist_note():
+    name = list_widget.selectedItems()[0].text()
+    text_edit.setText(notes[name]["вміст"])
+
+list_widget.itemClicked.connect(vmist_note)
+def change_note():
+    name = list_widget.selectedItems()[0].text()
+    notes[name]["вміст"] = text_edit.toPlainText()
+    write_data()
+save_btn.clicked.connect(change_note)
+def add_note():
+    res, ok = QInputDialog.getText(window, "Введення", "Введіть назву замітки")
+    if ok:
+        notes[res] = {
+            "вміст" : "",
+            "теги" : []
+        }
+        write_data()
+create_btn.clicked.connect(add_note)
 
 window.show()
 app.exec()
