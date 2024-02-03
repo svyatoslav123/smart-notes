@@ -2,8 +2,28 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtWidgets import *
-import json
 app = QApplication([])
+app.setStyleSheet("""
+     QWidget {
+        background: #ccdaed;
+     }
+     QPushButton {
+        background: #e9edf2;
+        border-style: outset;
+     }
+     QListWidget { 
+        background: #ccdbd5;
+     }
+     QTextEdit { 
+        background: #e1ede8;
+     }
+
+
+
+
+ """)
+import json
+
 notes = {}
 window = QWidget()
 window.resize(700, 500)
@@ -56,7 +76,8 @@ list_widget.addItems(notes)
 def vmist_note():
     name = list_widget.selectedItems()[0].text()
     text_edit.setText(notes[name]["вміст"])
-
+    list_tegs.clear()
+    list_tegs.addItems(notes[name]["теги"])
 list_widget.itemClicked.connect(vmist_note)
 def change_note():
     name = list_widget.selectedItems()[0].text()
@@ -70,22 +91,39 @@ def add_note():
             "вміст" : "",
             "теги" : []
         }
-
+    list_widget.clear()
+    list_widget.addItems(notes)
+    write_data()
 def del_note():
     res, ok = QInputDialog.getText(window, "Введення", "Введіть назву замітки")
     if ok:
-         notes[res] = {
-             "вміст": "",
-              "теги": []
-        }
-def change_note():
-    name = list_widget.selectedItems()[0].text()
+        notes.pop(res)
+        list_widget.clear()
+        list_widget.addItems(notes)
+        write_data()
+def save_note():
+    text_edit.setText(notes[name]["вміст"])
     notes[name]["вміст"] = text_edit.toPlainText()
 
     write_data()
-
-    delate_btn_btn.clicked.connect(del_note)
+def add_tag():
+    name = list_widget.selectedItems()[0].text()
+    tag = enter_teg.text()
+    notes[name]["теги"].append(tag)
+    list_tegs.clear()
+    list_tegs.addItems(notes[name]["теги"])
     write_data()
+def delete_tag():
+    name = list_widget.selectedItems()[0].text()
+    name_tag = list_tegs.selectedItems()[0].text()
+    notes[name]["теги"].remove(name_tag)
+    list_tegs.clear()
+    list_tegs.addItems(notes[name]["теги"])
+    write_data()
+
+open_to_notes.clicked.connect(delete_tag)
+save_btn.clicked.connect(save_note)
+add_to_notes.clicked.connect(add_tag)
 create_btn.clicked.connect(add_note)
 delate_btn.clicked.connect(del_note)
 window.show()
