@@ -18,7 +18,14 @@ app.setStyleSheet("""
         background: #e1ede8;
      }
 
-
+      QPushButton {
+        color: blue;
+        font-size: 15px;
+        font-family: Impact;
+        border-width: 2px;
+        border-color: black;
+        border-radius: 5px;
+     }
 
 
  """)
@@ -39,6 +46,7 @@ open_to_notes = QPushButton("Відкрити до замітки")
 search_notes_for_teg = QPushButton("Шукати замітку по тегу")
 list_notes_lbl = QLabel("Список заміток")
 list_tegs_lbl = QLabel("Список тегів")
+skunytu =  QLabel("Скинути пошук")
 
 
 
@@ -59,6 +67,7 @@ v2.addWidget(enter_teg)
 v2.addWidget(add_to_notes)
 v2.addWidget(open_to_notes)
 v2.addWidget(search_notes_for_teg)
+v2.addWidget(skunytu)
 main_line.addLayout(v1)
 main_line.addLayout(v2)
 window.setLayout(main_line)
@@ -120,8 +129,30 @@ def delete_tag():
     list_tegs.clear()
     list_tegs.addItems(notes[name]["теги"])
     write_data()
+def search_tag():  # кнопка "шукати замітку за тегом"
+    button_text = search_notes_for_teg.text()
+    tag = enter_teg.text()
+
+    if button_text == "Шукати замітки за тегом":
+        apply_tag_search(tag)
+    elif button_text == "Скинути пошук":
+        list_widget.clear()
+        list_widget.addItems(notes)
+        search_notes_for_teg.setText(skunytu)
+
+def apply_tag_search(tag):
+    notes_filtered = {}
+    for note, value in notes.items():
+        if tag in value["теги"]:
+            notes_filtered[note] = value
+
+    search_notes_for_teg.setText("Скинути пошук")
+    list_widget.clear()
+    list_tegs.clear()
+    list_widget.addItems(notes_filtered)
 
 open_to_notes.clicked.connect(delete_tag)
+
 save_btn.clicked.connect(save_note)
 add_to_notes.clicked.connect(add_tag)
 create_btn.clicked.connect(add_note)
