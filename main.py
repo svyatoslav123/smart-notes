@@ -10,6 +10,8 @@ app.setStyleSheet("""
      QPushButton {
         background: #e9edf2;
         border-style: outset;
+        min-height: 30px;
+        min-width: 100px;
      }
      QListWidget { 
         background: #ccdbd5;
@@ -26,10 +28,18 @@ app.setStyleSheet("""
         border-color: black;
         border-radius: 5px;
      }
-
+      QPushButton#save_btn {
+        color: green;
+        font-size: 20px;
+        font-family: Impact;
+        border-width: 4px;
+        border-color: black;
+        border-radius: 5px;
+      }
 
  """)
 import json
+
 
 notes = {}
 window = QWidget()
@@ -47,6 +57,7 @@ search_notes_for_teg = QPushButton("Шукати замітку по тегу")
 list_notes_lbl = QLabel("Список заміток")
 list_tegs_lbl = QLabel("Список тегів")
 skunytu =  QLabel("Скинути пошук")
+save_btn.setObjectName("save_btn")
 
 
 
